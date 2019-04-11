@@ -6,10 +6,11 @@ package proto
 import (
 	context "context"
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -228,6 +229,14 @@ func (c *serverClient) LoginRequest(ctx context.Context, in *UserLoginRequest, o
 type ServerServer interface {
 	// Sends a greeting
 	LoginRequest(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
+}
+
+// UnimplementedServerServer can be embedded to have forward compatible implementations.
+type UnimplementedServerServer struct {
+}
+
+func (*UnimplementedServerServer) LoginRequest(ctx context.Context, req *UserLoginRequest) (*UserLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginRequest not implemented")
 }
 
 func RegisterServerServer(s *grpc.Server, srv ServerServer) {
